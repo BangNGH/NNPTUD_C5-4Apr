@@ -19,7 +19,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
-
+app.use(express.json());
 app.use(cookieParser());
 app.use(session({
   secret: 'your_secret_key', // Chuỗi bí mật để ký và mã hóa session ID

@@ -7,9 +7,12 @@ module.exports = async function (req, res, next) {
     let token;
     if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
         token = req.headers.authorization.split(" ")[1];
+    
+
     }else{
         if(req.cookies.token){
             token = req.cookies.token;
+         
         }
     }
     if(!token){
@@ -21,6 +24,7 @@ module.exports = async function (req, res, next) {
         if (result.exp * 1000 > Date.now()) {
             var user = await userModel.findById(result.id);
             req.user = user
+        
             next();
         } else {
             ResHand(res, false, "yeu cau dang nhap");

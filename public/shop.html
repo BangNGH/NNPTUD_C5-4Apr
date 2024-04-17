@@ -280,18 +280,26 @@
           },
         });
       });
+      function getCookie(name) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) return parts.pop().split(";").shift();
+}
+var token = getCookie("jwtToken");
       function addToCart(bookId) {
-        console.log("Adding book with ID " + bookId + " to cart...");
         $.ajax({
             url: "http://localhost:3000/cart/add-to-cart",
             type: "POST",
+        
+    contentType: "application/json; charset=utf-8",
             data: JSON.stringify({
               "bookId": bookId
             }),
-        
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+            },
             success: function (data) {
-              console.log(data);
-              alert(data);
+              alert("Đã thêm vào giỏ hàng!");
         
             },
             error: function (jqXHR, exception) {
@@ -299,26 +307,6 @@
               console.log(exception);
             },
         });
-
-$.ajax({
-    url: "http://localhost:3000/cart",
-    type: "GET",
-    xhrFields: {
-        withCredentials: true 
-    },
-    beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", document.cookie);
-        },
-    success: function (data) {
-        console.log(data);
-        console.log(document.cookie);
-    },
-    error: function (jqXHR, exception) {
-        console.log(jqXHR);
-        console.log(exception);
-    }
-});
-
       }
     </script>
     

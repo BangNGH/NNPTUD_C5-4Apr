@@ -11,7 +11,7 @@
 
     <!-- title -->
     <title>Cart</title>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <!-- favicon -->
     <link rel="shortcut icon" type="image/png" href="assets/img/favicon.png" />
     <!-- google font -->
@@ -180,7 +180,7 @@
                     <th class="product-total">Total</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody id="carttable">
                   <tr class="table-body-row">
                     <td class="product-remove">
                       <a href="#"><i class="far fa-window-close"></i></a>
@@ -188,12 +188,17 @@
                     <td class="product-image">
                       <img src="assets/img/products/product-img-1.jpg" alt="" />
                     </td>
-                    <td class="product-name">Strawberry</td>
-                    <td class="product-price">$85</td>
+                    <td class="product-name">Tên sách(name)</td>
+                    <td class="product-price">Price</td>
                     <td class="product-quantity">
-                      <input type="number" placeholder="0" />
+                      <input
+                        type="number"
+                        name="quantity"
+                        value=""
+                        placeholder="0"
+                      />
                     </td>
-                    <td class="product-total">1</td>
+                    <td class="product-total">quantity*value</td>
                   </tr>
                   <tr class="table-body-row">
                     <td class="product-remove">
@@ -239,32 +244,31 @@
                 </thead>
                 <tbody>
                   <tr class="total-data">
-                    <td><strong>Subtotal: </strong></td>
-                    <td>$500</td>
-                  </tr>
-                  <tr class="total-data">
-                    <td><strong>Shipping: </strong></td>
-                    <td>$45</td>
-                  </tr>
-                  <tr class="total-data">
                     <td><strong>Total: </strong></td>
-                    <td>$545</td>
+                    <td id="cartTotal">$545</td>
                   </tr>
                 </tbody>
               </table>
-              <div class="cart-buttons">
-                <a href="cart.html" class="boxed-btn">Update Cart</a>
-                <a href="checkout.html" class="boxed-btn black">Check Out</a>
-              </div>
-            </div>
 
-            <div class="coupon-section">
-              <h3>Apply Coupon</h3>
-              <div class="coupon-form-wrap">
-                <form action="index.html">
-                  <p><input type="text" placeholder="Coupon" /></p>
-                  <p><input type="submit" value="Apply" /></p>
-                </form>
+              <div class="cart-buttons">
+                <form></form>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="inputEmail4">Người nhận</label>
+                    <input type="text" class="form-control" id="name" placeholder="Người nhận hàng">
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="inputPassword4">Điện thoại</label>
+                    <input type="text" class="form-control" id="phone" placeholder="Số điện thoại">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="inputAddress">Address</label>
+                  <input type="text" class="form-control" id="address" placeholder="Địa chỉ nhận hàng">
+                </div>
+                <a href="checkout.html" class="boxed-btn black">Check Out</a>
+              </form>
+                <a href="cart.html" class="boxed-btn">Update Cart</a>
               </div>
             </div>
           </div>
@@ -272,134 +276,33 @@
       </div>
     </div>
     <!-- end cart -->
-
-    <!-- logo carousel -->
-    <div class="logo-carousel-section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="logo-carousel-inner">
-              <div class="single-logo-item">
-                <img src="assets/img/company-logos/1.png" alt="" />
-              </div>
-              <div class="single-logo-item">
-                <img src="assets/img/company-logos/2.png" alt="" />
-              </div>
-              <div class="single-logo-item">
-                <img src="assets/img/company-logos/3.png" alt="" />
-              </div>
-              <div class="single-logo-item">
-                <img src="assets/img/company-logos/4.png" alt="" />
-              </div>
-              <div class="single-logo-item">
-                <img src="assets/img/company-logos/5.png" alt="" />
-              </div>
-            </div>
+<!-- logo carousel -->
+<div class="logo-carousel-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="logo-carousel-inner">
+          <div class="single-logo-item">
+            <img src="assets/img/company-logos/1.png" alt="">
+          </div>
+          <div class="single-logo-item">
+            <img src="assets/img/company-logos/2.png" alt="">
+          </div>
+          <div class="single-logo-item">
+            <img src="assets/img/company-logos/3.png" alt="">
+          </div>
+          <div class="single-logo-item">
+            <img src="assets/img/company-logos/4.png" alt="">
+          </div>
+          <div class="single-logo-item">
+            <img src="assets/img/company-logos/5.png" alt="">
           </div>
         </div>
       </div>
     </div>
-    <!-- end logo carousel -->
-
-    <!-- footer -->
-    <div class="footer-area">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-3 col-md-6">
-            <div class="footer-box about-widget">
-              <h2 class="widget-title">About us</h2>
-              <p>
-                Ut enim ad minim veniam perspiciatis unde omnis iste natus error
-                sit voluptatem accusantium doloremque laudantium, totam rem
-                aperiam, eaque ipsa quae.
-              </p>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-6">
-            <div class="footer-box get-in-touch">
-              <h2 class="widget-title">Get in Touch</h2>
-              <ul>
-                <li>34/8, East Hukupara, Gifirtok, Sadan.</li>
-                <li>support@fruitkha.com</li>
-                <li>+00 111 222 3333</li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-6">
-            <div class="footer-box pages">
-              <h2 class="widget-title">Pages</h2>
-              <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="services.html">Shop</a></li>
-                <li><a href="news.html">News</a></li>
-                <li><a href="contact.html">Contact</a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-6">
-            <div class="footer-box subscribe">
-              <h2 class="widget-title">Subscribe</h2>
-              <p>Subscribe to our mailing list to get the latest updates.</p>
-              <form action="index.html">
-                <input type="email" placeholder="Email" />
-                <button type="submit">
-                  <i class="fas fa-paper-plane"></i>
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- end footer -->
-
-    <!-- copyright -->
-    <div class="copyright">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-6 col-md-12">
-            <p>
-              Copyrights &copy; 2019 -
-              <a href="https://imransdesign.com/">Imran Hossain</a>, All Rights
-              Reserved.<br />
-              Distributed By - <a href="https://themewagon.com/">Themewagon</a>
-            </p>
-          </div>
-          <div class="col-lg-6 text-right col-md-12">
-            <div class="social-icons">
-              <ul>
-                <li>
-                  <a href="#" target="_blank"
-                    ><i class="fab fa-facebook-f"></i
-                  ></a>
-                </li>
-                <li>
-                  <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
-                </li>
-                <li>
-                  <a href="#" target="_blank"
-                    ><i class="fab fa-instagram"></i
-                  ></a>
-                </li>
-                <li>
-                  <a href="#" target="_blank"
-                    ><i class="fab fa-linkedin"></i
-                  ></a>
-                </li>
-                <li>
-                  <a href="#" target="_blank"
-                    ><i class="fab fa-dribbble"></i
-                  ></a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- end copyright -->
-
+  </div>
+</div>
+<!-- end logo carousel -->
     <!-- jquery -->
     <script src="assets/js/jquery-1.11.3.min.js"></script>
     <!-- bootstrap -->
@@ -421,26 +324,90 @@
     <!-- main js -->
     <script src="assets/js/main.js"></script>
     <script type="text/javascript">
+      function getCookie(name) {
+        var value = "; " + document.cookie;
+        var parts = value.split("; " + name + "=");
+        if (parts.length == 2) return parts.pop().split(";").shift();
+      }
+      var token = getCookie("jwtToken");
       $(document).ready(function () {
-        const headers = {
-          Authorization: "Bearer " + document.cookie,
-        };
-
         $.ajax({
           url: "http://localhost:3000/cart",
           type: "GET",
-		
-          xhrFields: {
-            withCredentials: true, // Chỉ định sử dụng cookie trong yêu cầu Ajax
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
           },
-          success: function (data) {
-            console.log(data);
+          success: function (response) {
+            // Xóa các dòng hiện có trong bảng giỏ hàng (nếu có)
+            var cartTotal = 0;
+
+            $(".table-body-row").remove();
+
+            // Lặp qua mỗi cartItem và hiển thị thông tin lên trang HTML
+            response.forEach(function (cartItem) {
+              var totalItem = cartItem.quantity * cartItem.bookId.price;
+              cartTotal += totalItem;
+              var productRemove =
+                '<td class="product-remove"><a href="#" class="remove-item" data-item-id="' + cartItem.bookId._id + '"><i class="far fa-window-close"></i></a></td>';
+              var productImage =
+                '<td class="product-image"><img src="assets/img/products/product-img-1.jpg" alt="" /></td>';
+              var productName =
+                '<td class="product-name">' + cartItem.bookId.name + "</td>"; // Thay "name" bằng trường tên sách thực tế trong cartItem
+              var productPrice =
+                '<td class="product-price">' + cartItem.bookId.price + "</td>"; // Thay "price" bằng trường giá thực tế trong cartItem
+              var productQuantity =
+                '<td class="product-quantity"><input type="number" name="quantity" value="' +
+                cartItem.quantity +
+                '" placeholder="0" /></td>';
+              var productTotal =
+                '<td class="product-total">' + totalItem + "</td>"; // Tính tổng tiền cho mỗi sản phẩm
+
+              // Tạo dòng mới trong bảng và thêm các cột vào
+              var newRow =
+                '<tr class="table-body-row" data-item-id="'+ cartItem.bookId._id+'">' +
+                productRemove +
+                productImage +
+                productName +
+                productPrice +
+                productQuantity +
+                productTotal +
+                "</tr>";
+
+              // Thêm dòng mới vào bảng giỏ hàng
+              $("#carttable").append(newRow);
+              document.getElementById("cartTotal").innerHTML =
+                cartTotal + " vnd";
+            });
+            $("#carttable").on("click", ".remove-item", function (event) {
+                event.preventDefault(); 
+                var itemId = $(this).data("item-id");
+                deleteCartItem(itemId);
+            });
           },
           error: function (jqXHR, exception) {
             console.log(jqXHR);
             console.log(exception);
           },
         });
+     
+        // Hàm xử lý gọi API delete
+        function deleteCartItem(itemId) {
+          $.ajax({
+            url: "http://localhost:3000/cart/delete-item/" + itemId,
+            type: "DELETE",
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+            },
+            success: function (response) {
+              console.log(response);
+              $('.table-body-row[data-item-id="' + itemId + '"]').remove();
+            },
+            error: function (xhr, status, error) {
+              console.error(xhr.responseText);
+              alert("Đã xảy ra lỗi khi xoá mục khỏi giỏ hàng.");
+            },
+          });
+        }
       });
     </script>
   </body>
