@@ -20,6 +20,7 @@ var bookSchema = mongoose.Schema({
     isDeleted:{
         type:Boolean,
         default:false
-    }
+    },
+    imageURL: String
 }, { timestamps: true })
 module.exports = new mongoose.model('book', bookSchema)

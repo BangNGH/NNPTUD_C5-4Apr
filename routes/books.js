@@ -3,6 +3,22 @@ var router = express.Router();
 var bookModel = require('../schemas/book')
 require('express-async-errors')
 
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, '/uploads')
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    cb(null, file.originalname)
+  }
+})
+const upload = multer({storage});
+
+
+// router.post('/api/upload', upload.single('img'), async function (req, res, next){
+//   res.send("Upload success!");
+// })
 
 router.get('/', async function (req, res, next) {
   let limit = req.query.limit ? req.query.limit : 5;
@@ -44,14 +60,15 @@ router.get('/:id', async function (req, res, next) {
 
 });
 
-router.post('/', async function (req, res, next) {
+router.post('/', upload.single('img'), async function (req, res, next) {
   try {
     let newBook = new bookModel({
       name: req.body.name,
       year: req.body.year,
       author: req.body.author,
       price: req.body.price,
-      description: req.body.description
+      description: req.body.description,
+      // imageURL: req.file.path
     });
     await newBook.save();
     res.status(200).send(newBook);
