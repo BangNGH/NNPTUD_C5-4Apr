@@ -162,4 +162,14 @@ router.post("/ResetPassword/:token", async function (req, res, next) {
   res.status(200).send({ message: "Doi pass thanh cong" });
 });
 
+router.post("/contact", async function (req, res, next) {
+  try {
+    const formData = req.body;
+    await sendContact(formData);
+    res.status(200).send({ message: "Gui mail thanh cong" });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res.status(500).send({ error: "An error occurred while sending email" });
+  }
+});
 module.exports = router;
