@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registration Form</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .register-container {
+        width: 300px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #fff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .register-container h2 {
+        text-align: center;
+        color: #333;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: #666;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        font-size: 14px;
+      }
+
+      .form-group button {
+        width: 100%;
+        padding: 8px;
+        border: none;
+        border-radius: 3px;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      .form-group button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="register-container">
+      <h2>Register</h2>
+      <form id="registrationForm" method="POST">
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <div class="form-group">
+          <button type="submit">Register</button>
+        </div>
+        <div class="form-group">
+          <a href="http://127.0.0.1:5500/public/login.html">Login</a> |
+          <a href="http://127.0.0.1:5500/public/forgotPassword.html"
+            >Forgot Password</a
+          >
+        </div>
+      </form>
+    </div>
+
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $("#registrationForm").submit(function (e) {
+          e.preventDefault();
+          var formData = {
+            email: $("#email").val(),
+            username: $("#username").val(),
+            password: $("#password").val(),
+          };
+          $.ajax({
+            type: "POST",
+            url: "http://localhost:3000/auth/register",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(formData),
+            dataType: "json",
+            success: function (data) {
+              console.log(data);
+              alert("Tạo tài khoản thành công, hãy đăng nhập.");
+              window.location.replace(
+                "http://127.0.0.1:5500/public/login.html"
+              );
+            },
+            error: function (data) {
+              console.log("An error occurred.");
+              console.log(data);
+
+              // Kiểm tra nếu có dữ liệu JSON trong response
+              if (data.responseJSON) {
+                // Lấy dữ liệu JSON từ response
+                var responseData = data.responseJSON;
+
+                // Kiểm tra nếu có trường "data" trong dữ liệu JSON
+                if (responseData.data && responseData.data.length > 0) {
+                  // Lặp qua mỗi lỗi trong mảng data
+                  responseData.data.forEach(function (error) {
+                    // Hiển thị thông điệp lỗi cho người dùng
+                    alert(error.msg);
+                  });
+                } else {
+                  // Hiển thị thông điệp lỗi mặc định
+                  alert("Email này đã tồn tại");
+                }
+              } else {
+                // Hiển thị thông điệp lỗi mặc định
+                alert("Email này đã tồn tại");
+              }
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
