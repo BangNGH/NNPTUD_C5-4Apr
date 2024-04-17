@@ -89,6 +89,36 @@ router.post("/register", checkAuth(), async function (req, res, next) {
     res.status(404).send(error);
   }
 });
+router.post('/updateInfo', protect, async (req, res) => {
+  try {
+      // Lấy thông tin địa chỉ và số điện thoại từ body của request
+      const { address, phone } = req.body;
+
+      // Lấy thông tin người dùng từ token xác thực
+      const userId = req.user._id;
+
+      // Kiểm tra xem người dùng có tồn tại không
+      const user = await userModel.findById(userId);
+
+      if (!user) {
+          return res.status(404).json({ message: 'Người dùng không tồn tại' });
+      }
+
+      // Cập nhật địa chỉ và số điện thoại cho người dùng
+      user.address = address;
+      user.phone = phone;
+
+      // Lưu thông tin người dùng đã cập nhật
+      await user.save();
+
+      // Trả về thông tin người dùng đã được cập nhật thành công
+      res.status(200).json({ message: 'Thông tin người dùng đã được cập nhật thành công' });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Đã xảy ra lỗi khi cập nhật thông tin người dùng' });
+  }
+});
+
 
 
 router.get("/ForgotPassword", function (req, res) {

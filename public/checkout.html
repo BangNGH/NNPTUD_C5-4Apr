@@ -181,7 +181,7 @@
                         aria-expanded="true"
                         aria-controls="collapseOne"
                       >
-                        Billing Address
+                        Cập nhật thông tin
                       </button>
                     </h5>
                   </div>
@@ -194,81 +194,17 @@
                   >
                     <div class="card-body">
                       <div class="billing-address-form">
-                        <form action="index.html">
-                          <p><input type="text" placeholder="Name" /></p>
-                          <p><input type="email" placeholder="Email" /></p>
-                          <p><input type="text" placeholder="Address" /></p>
-                          <p><input type="tel" placeholder="Phone" /></p>
-                          <p>
-                            <textarea
-                              name="bill"
-                              id="bill"
-                              cols="30"
-                              rows="10"
-                              placeholder="Say Something"
-                            ></textarea>
-                          </p>
+                        <form id="updateInfo">
+                          <p><input type="text" name="phone" id="phone" placeholder="Điện thoại" /></p>
+                          <p><input type="text" placeholder="Địa chỉ nhận hàng" name="address" id="address" /></p>
+                          <a class="boxed-btn" onclick="return updateInfo();">Lưu địa chỉ</a>
                         </form>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="card single-accordion">
-                  <div class="card-header" id="headingTwo">
-                    <h5 class="mb-0">
-                      <button
-                        class="btn btn-link collapsed"
-                        type="button"
-                        data-toggle="collapse"
-                        data-target="#collapseTwo"
-                        aria-expanded="false"
-                        aria-controls="collapseTwo"
-                      >
-                        Shipping Address
-                      </button>
-                    </h5>
-                  </div>
-                  <div
-                    id="collapseTwo"
-                    class="collapse"
-                    aria-labelledby="headingTwo"
-                    data-parent="#accordionExample"
-                  >
-                    <div class="card-body">
-                      <div class="shipping-address-form">
-                        <p>Your shipping address form is here.</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="card single-accordion">
-                  <div class="card-header" id="headingThree">
-                    <h5 class="mb-0">
-                      <button
-                        class="btn btn-link collapsed"
-                        type="button"
-                        data-toggle="collapse"
-                        data-target="#collapseThree"
-                        aria-expanded="false"
-                        aria-controls="collapseThree"
-                      >
-                        Card Details
-                      </button>
-                    </h5>
-                  </div>
-                  <div
-                    id="collapseThree"
-                    class="collapse"
-                    aria-labelledby="headingThree"
-                    data-parent="#accordionExample"
-                  >
-                    <div class="card-body">
-                      <div class="card-details">
-                        <p>Your card details goes here.</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                
+               
               </div>
             </div>
           </div>
@@ -278,44 +214,23 @@
               <table class="order-details">
                 <thead>
                   <tr>
-                    <th>Đơn hàng đã mua</th>
-                    <th>Giá</th>
+                    <th>Ngày</th>
+                    <th>Trạng thái</th>
+                    <th>Tổng tiền</th>
+
+                    <th></th>
                   </tr>
                 </thead>
-                <tbody class="order-details-body">
+                <tbody id="orderBody" class="order-details-body">
                   <tr>
-                    <td>Tên sản phẩm</td>
-                    <td>Tổng tiền</td>
-                  </tr>
-                  <tr>
-                    <td>Strawberry</td>
-                    <td>$85.00</td>
-                  </tr>
-                  <tr>
-                    <td>Berry</td>
-                    <td>$70.00</td>
-                  </tr>
-                  <tr>
-                    <td>Lemon</td>
-                    <td>$35.00</td>
-                  </tr>
-                </tbody>
-                <tbody class="checkout-details">
-                  <tr>
-                    <td>Subtotal</td>
-                    <td>$190</td>
-                  </tr>
-                  <tr>
-                    <td>Shipping</td>
-                    <td>$50</td>
-                  </tr>
-                  <tr>
-                    <td>Total</td>
-                    <td>$240</td>
+                    <td>createdAt</td>
+                    <td>status</td>
+                    <td>totalPrice</td>
+                    <td><a style="text-decoration: underline">Xem</a></td>
                   </tr>
                 </tbody>
               </table>
-              <a href="#" class="boxed-btn">Place Order</a>
+             
             </div>
           </div>
         </div>
@@ -472,13 +387,39 @@
     <script src="assets/js/main.js"></script>
 
     <script type="text/javascript">
+          
+      function updateInfo() {
+        const address = document.getElementById("address").value;
+        const phone = document.getElementById("phone").value;
+        $.ajax({
+              url: "http://localhost:3000/auth/updateInfo",
+              type: "POST",
+              contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({
+              "address": address,
+              "phone": phone
+            }),
+              beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+              },
+              success: function (res) {
+                console.log(res);
+                alert(res);
+                alert("Cập nhật thông tin thành công");
+              },
+              error: function (jqXHR, exception) {
+                console.log(jqXHR);
+                console.log(exception);
+              },
+         });
+      };
       function getCookie(name) {
         var value = "; " + document.cookie;
         var parts = value.split("; " + name + "=");
         if (parts.length == 2) return parts.pop().split(";").shift();
       }
       var token = getCookie("jwtToken");
-	  var userId = "temp";
+      var userId = "temp";
       $(document).ready(function () {
         $.ajax({
           url: "http://localhost:3000/auth/me",
@@ -488,21 +429,49 @@
           },
           success: function (data) {
             console.log(data);
-			userId = data.data._id;
-			$.ajax({
-          url: "http://localhost:3000/orders/getAll/"+userId,
-          type: "GET",
-          beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", "Bearer " + token);
-          },
-          success: function (data) {
-            console.log(data);
-          },
-          error: function (jqXHR, exception) {
-            console.log(jqXHR);
-            console.log(exception);
-          },
-        });
+            userId = data.data._id;
+            $.ajax({
+              url: "http://localhost:3000/orders/getAll/" + userId,
+              type: "GET",
+              beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+              },
+              success: function (orders) {
+                console.log(orders);
+                document.getElementById("orderBody").innerHTML='';
+                orders.forEach(function (order) {
+                  var row =
+                    "<tr>" +
+                    "<td>" +
+                    order.createdAt +
+                    "</td>" +
+                    "<td>" +
+                    order.status +
+                    "</td>" +
+                    "<td>" +
+                    order.totalPrice +
+                    "</td>" +
+                    '<td><a href="#" class="viewOrder" data-order-id="' +
+                    order.id +
+                    '">Xem</a></td>' +
+                    "</tr>";
+
+                  $("#orderBody").append(row);
+                });
+
+                // Xử lý sự kiện click vào link "Xem" để xem chi tiết đơn hàng
+                $("#orderTable").on("click", ".viewOrder", function (event) {
+                  event.preventDefault();
+
+                  var orderId = $(this).data("order-id");
+                  console.log("Xem chi tiết đơn hàng có ID:", orderId);
+                });
+              },
+              error: function (jqXHR, exception) {
+                console.log(jqXHR);
+                console.log(exception);
+              },
+            });
           },
           error: function (jqXHR, exception) {
             console.log(jqXHR);
@@ -510,8 +479,6 @@
           },
         });
       });
-
-       
     </script>
   </body>
 </html>

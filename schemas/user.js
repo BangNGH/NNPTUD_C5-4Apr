@@ -19,6 +19,8 @@ var userSchema = new mongoose.Schema({
         default: true
     },
     email: String,
+    phone: String,
+    address: String,
     ResetPasswordToken: String,
     ResetPasswordExp: String
 }, { timestamps: true })

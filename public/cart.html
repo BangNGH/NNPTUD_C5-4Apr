@@ -440,6 +440,8 @@
             success: function (response) {
               console.log(response);
               $('.table-body-row[data-item-id="' + itemId + '"]').remove();
+              alert("Xoá khỏi giỏ hàng thành công");
+
             },
             error: function (xhr, status, error) {
               console.error(xhr.responseText);
@@ -460,7 +462,7 @@
         requestData.phone = phone;
 
         requestData.totalPrice = cartTotal;
-
+        console.log(JSON.stringify(requestData));
         $.ajax({
           url: "http://localhost:3000/orders/create-order",
           type: "POST",
@@ -493,6 +495,7 @@
           }
         });
         console.log(JSON.stringify(updateData));
+      
         $.ajax({
           url: "http://localhost:3000/cart/update-cart",
           type: "POST",

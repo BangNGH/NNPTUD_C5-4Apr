@@ -58,7 +58,7 @@ router.post("/update-cart", protect, async (req, res) => {
 
     await cart.save();
 
-    res.status(200).send("Sản phẩm đã được thêm vào giỏ hàng.");
+    res.status(200).send("Sửa số lượng thành công.");
   } catch (error) {
     console.error(error);
     res.status(500).send("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");

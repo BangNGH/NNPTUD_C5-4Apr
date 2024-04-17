@@ -26,11 +26,24 @@ router.get("/:id", protect, async function (req, res) {
 
 router.post('/create-order', protect, async (req, res) => {
   try {
+    var phone;
+    var address;
+      if(req.body.phone){
+        phone = req.body.phone;
+      }else{
+        phone =  req.user.phone;
+      } 
+      if(req.body.address){
+        address = req.body.address;
+      }else{
+        address =  req.user.address;
+      } 
+   
       const order = await Order.create({ 
         userId: req.user._id, 
         books: req.body.books,
-        shippingAddress: req.body.address,
-        phone: req.body.phone,
+        shippingAddress:address,
+        phone: phone,
         name: req.body.name,
         totalPrice: req.body.totalPrice
       });
