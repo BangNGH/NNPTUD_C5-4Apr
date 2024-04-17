@@ -1,15 +1,21 @@
 const mongoose = require('mongoose');
 const orderSchema = mongoose.Schema({
-    orderItems:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'OrderItem',
-        require: true
-    }],
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'user' }, 
+    books: [
+        {
+            bookId: { type: mongoose.Schema.Types.ObjectId, ref: 'book' },
+            quantity: { type: Number, default: 1 }
+        }
+    ],
     shippingAddress: {
         type: String,
         require: true
     },
     phone: {
+        type: String,
+        require: true
+    },
+    name: {
         type: String,
         require: true
     },
@@ -21,11 +27,7 @@ const orderSchema = mongoose.Schema({
     totalPrice: {
         type: Number
     },
-    user: {
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'user',
-        require: true
-    },
+   
     isDeleted:{
         type:Boolean,
         default:false

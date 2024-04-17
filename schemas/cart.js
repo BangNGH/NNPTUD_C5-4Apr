@@ -9,5 +9,4 @@ var cartSchema = mongoose.Schema({
         }
     ]
 }, { timestamps: true })
-
 module.exports =  new mongoose.model('cart', cartSchema)

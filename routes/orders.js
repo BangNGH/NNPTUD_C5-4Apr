@@ -1,8 +1,9 @@
 var express = require("express");
 var router = express.Router();
 const { Order } = require("../schemas/order");
-const { OrderItem } = require("../schemas/order-item");
-
+const { OrderItem } = require("../schemas/cart");
+var protect = require("../middlewares/protect");
+var CartItem = require('../schemas/cart')
 router.get("/", async function (req, res) {
   var queries = {};
   queries.isDeleted = false;
@@ -15,7 +16,7 @@ router.get("/", async function (req, res) {
   res.send(orderList);
 });
 
-router.get("/:id", async function (req, res) {
+router.get("/:id", protect, async function (req, res) {
   const order = await Order.findById(req.params.id).populate('user', 'username').populate({path: 'orderItems', populate:'book'});
   if (!order) {
     res.status(500).json({ success: false });
@@ -23,44 +24,38 @@ router.get("/:id", async function (req, res) {
   res.send(order);
 });
 
-router.post("/", async (req, res) => {
+router.post('/create-order', protect, async (req, res) => {
   try {
-    const orderItemsIds = Promise.all(
-      req.body.orderItems.map(async (orderItem) => {
-        let newOrderItems = new OrderItem({
-          quantity: orderItem.quantity,
-          book: orderItem.book,
-        });
-        newOrderItems = await newOrderItems.save();
-        return newOrderItems._id;
-      })
-    );
-
-    const orderItemsIdsResolved = await orderItemsIds;
-    const totalPrices = await Promise.all(orderItemsIdsResolved.map(async (orderItemId)=>{
-      const orderItem = await OrderItem.findById(orderItemId).populate('book', 'price')
-      const totalPrice = orderItem.book.price*orderItem.quantity;
-      return totalPrice;
-    }))
-    console.log(totalPrices);
-    const totalPrice = totalPrices.reduce((a, b)=>a+b, 0)
-
-    let order = new Order({
-      orderItems: orderItemsIdsResolved,
-      shippingAddress: req.body.shippingAddress,
-      phone: req.body.phone,
-      status: req.body.status,
-      totalPrice: totalPrice,
-      user: req.body.user,
-    });
-    await order.save();
-    res.status(200).send(order);
+      const order = await Order.create({ 
+        userId: req.user._id, 
+        books: req.body.books,
+        shippingAddress: req.body.address,
+        phone: req.body.phone,
+        name: req.body.name,
+        totalPrice: req.body.totalPrice
+      });
+        // Xoá các món hàng đã đặt từ giỏ hàng
+      await CartItem.updateOne({ userId: req.user._id }, { $pull: { books: { bookId: { $in: req.body.books.map(item => item.bookId) } } } });
+      res.status(201).json(order);
   } catch (error) {
-    res.status(404).send(error);
+      console.error(error);
+      res.status(500).send('Đã xảy ra lỗi khi tạo đơn hàng.');
   }
 });
 
-router.put('/:id', async function (req, res, next) {
+router.get('/orders/:userId', async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+      const orders = await Order.find({ userId: userId }).populate('books.bookId');
+      res.status(200).json(orders);
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Đã xảy ra lỗi khi lấy danh sách đơn hàng.');
+  }
+});
+
+router.put('/:id', protect, async function (req, res, next) {
   try {
     var order = await Order.findByIdAndUpdate(req.params.id,
       {
@@ -75,7 +70,7 @@ router.put('/:id', async function (req, res, next) {
   }
 });
 
-router.delete('/:id', async function (req, res) {
+router.delete('/:id', protect, async function (req, res) {
   try {
     var order = await Order.findByIdAndUpdate(req.params.id, {
       isDeleted: true
@@ -107,7 +102,7 @@ router.delete('/:id', async function (req, res) {
 //   res.send({totalsales: totalSales.pop().totalSales});
 // });
 
-router.get("/user/:userid", async (req, res) =>{
+router.get("/user/:userid", protect, async (req, res) =>{
   const orderList = await Order.find({user: req.params.userid}).populate({path: 'orderItems', populate:'book'}).sort('createdAt');
 
   if (!orderList) {

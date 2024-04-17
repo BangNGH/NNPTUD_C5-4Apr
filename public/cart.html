@@ -251,24 +251,42 @@
               </table>
 
               <div class="cart-buttons">
-                <form></form>
-                <div class="form-row">
-                  <div class="form-group col-md-6">
-                    <label for="inputEmail4">Người nhận</label>
-                    <input type="text" class="form-control" id="name" placeholder="Người nhận hàng">
+                <form id="formOrder">
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="name">Người nhận</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="name"
+                        name="name"
+                        placeholder="Người nhận hàng"
+                      />
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="phone">Điện thoại</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="phone"
+                        name="phone"
+                        placeholder="Số điện thoại"
+                      />
+                    </div>
                   </div>
-                  <div class="form-group col-md-6">
-                    <label for="inputPassword4">Điện thoại</label>
-                    <input type="text" class="form-control" id="phone" placeholder="Số điện thoại">
+                  <div class="form-group">
+                    <label for="address">Address</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="address"
+                      name="address"
+                      placeholder="Địa chỉ nhận hàng"
+                    />
                   </div>
-                </div>
-                <div class="form-group">
-                  <label for="inputAddress">Address</label>
-                  <input type="text" class="form-control" id="address" placeholder="Địa chỉ nhận hàng">
-                </div>
-                <a href="checkout.html" class="boxed-btn black">Check Out</a>
-              </form>
-                <a href="cart.html" class="boxed-btn">Update Cart</a>
+                  <a onclick="checkout()" class="boxed-btn black">Check Out</a>
+                  <a onclick="updateCart()" class="boxed-btn">Update Cart</a>
+                </form>
               </div>
             </div>
           </div>
@@ -276,33 +294,33 @@
       </div>
     </div>
     <!-- end cart -->
-<!-- logo carousel -->
-<div class="logo-carousel-section">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="logo-carousel-inner">
-          <div class="single-logo-item">
-            <img src="assets/img/company-logos/1.png" alt="">
-          </div>
-          <div class="single-logo-item">
-            <img src="assets/img/company-logos/2.png" alt="">
-          </div>
-          <div class="single-logo-item">
-            <img src="assets/img/company-logos/3.png" alt="">
-          </div>
-          <div class="single-logo-item">
-            <img src="assets/img/company-logos/4.png" alt="">
-          </div>
-          <div class="single-logo-item">
-            <img src="assets/img/company-logos/5.png" alt="">
+    <!-- logo carousel -->
+    <div class="logo-carousel-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="logo-carousel-inner">
+              <div class="single-logo-item">
+                <img src="assets/img/company-logos/1.png" alt="" />
+              </div>
+              <div class="single-logo-item">
+                <img src="assets/img/company-logos/2.png" alt="" />
+              </div>
+              <div class="single-logo-item">
+                <img src="assets/img/company-logos/3.png" alt="" />
+              </div>
+              <div class="single-logo-item">
+                <img src="assets/img/company-logos/4.png" alt="" />
+              </div>
+              <div class="single-logo-item">
+                <img src="assets/img/company-logos/5.png" alt="" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
-<!-- end logo carousel -->
+    <!-- end logo carousel -->
     <!-- jquery -->
     <script src="assets/js/jquery-1.11.3.min.js"></script>
     <!-- bootstrap -->
@@ -324,6 +342,12 @@
     <!-- main js -->
     <script src="assets/js/main.js"></script>
     <script type="text/javascript">
+      var cartTotal = 0;
+      const requestData = {};
+      const updateData = {};
+      updateData.books = [];
+      requestData.books = [];
+
       function getCookie(name) {
         var value = "; " + document.cookie;
         var parts = value.split("; " + name + "=");
@@ -338,33 +362,49 @@
             xhr.setRequestHeader("Authorization", "Bearer " + token);
           },
           success: function (response) {
-            // Xóa các dòng hiện có trong bảng giỏ hàng (nếu có)
-            var cartTotal = 0;
-
             $(".table-body-row").remove();
+            console.log(response);
 
-            // Lặp qua mỗi cartItem và hiển thị thông tin lên trang HTML
             response.forEach(function (cartItem) {
+              var tmpBook = {};
+              tmpBook = {
+                bookId: cartItem.bookId._id,
+                quantity: cartItem.quantity,
+              };
+              requestData.books.push(tmpBook);
+
+              var tmpBookUpdate = {};
+              tmpBookUpdate = {
+                bookId: cartItem.bookId._id,
+                quantity: cartItem.quantity,
+              };
+              updateData.books.push(tmpBookUpdate);
+
               var totalItem = cartItem.quantity * cartItem.bookId.price;
               cartTotal += totalItem;
               var productRemove =
-                '<td class="product-remove"><a href="#" class="remove-item" data-item-id="' + cartItem.bookId._id + '"><i class="far fa-window-close"></i></a></td>';
+                '<td class="product-remove"><a href="#" class="remove-item" data-item-id="' +
+                cartItem.bookId._id +
+                '"><i class="far fa-window-close"></i></a></td>';
               var productImage =
                 '<td class="product-image"><img src="assets/img/products/product-img-1.jpg" alt="" /></td>';
               var productName =
-                '<td class="product-name">' + cartItem.bookId.name + "</td>"; // Thay "name" bằng trường tên sách thực tế trong cartItem
+                '<td class="product-name">' + cartItem.bookId.name + "</td>";
               var productPrice =
-                '<td class="product-price">' + cartItem.bookId.price + "</td>"; // Thay "price" bằng trường giá thực tế trong cartItem
+                '<td class="product-price">' + cartItem.bookId.price + "</td>";
               var productQuantity =
-                '<td class="product-quantity"><input type="number" name="quantity" value="' +
+                '<td class="product-quantity"><input type="number" min=1 name="quantity" id="quantity' +
+                cartItem.bookId._id +
+                '" value="' +
                 cartItem.quantity +
                 '" placeholder="0" /></td>';
               var productTotal =
-                '<td class="product-total">' + totalItem + "</td>"; // Tính tổng tiền cho mỗi sản phẩm
+                '<td class="product-total">' + totalItem + "</td>";
 
-              // Tạo dòng mới trong bảng và thêm các cột vào
               var newRow =
-                '<tr class="table-body-row" data-item-id="'+ cartItem.bookId._id+'">' +
+                '<tr class="table-body-row" data-item-id="' +
+                cartItem.bookId._id +
+                '">' +
                 productRemove +
                 productImage +
                 productName +
@@ -373,15 +413,14 @@
                 productTotal +
                 "</tr>";
 
-              // Thêm dòng mới vào bảng giỏ hàng
               $("#carttable").append(newRow);
               document.getElementById("cartTotal").innerHTML =
                 cartTotal + " vnd";
             });
             $("#carttable").on("click", ".remove-item", function (event) {
-                event.preventDefault(); 
-                var itemId = $(this).data("item-id");
-                deleteCartItem(itemId);
+              event.preventDefault();
+              var itemId = $(this).data("item-id");
+              deleteCartItem(itemId);
             });
           },
           error: function (jqXHR, exception) {
@@ -389,14 +428,14 @@
             console.log(exception);
           },
         });
-     
+
         // Hàm xử lý gọi API delete
         function deleteCartItem(itemId) {
           $.ajax({
             url: "http://localhost:3000/cart/delete-item/" + itemId,
             type: "DELETE",
-            beforeSend: function(xhr) {
-                xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+            beforeSend: function (xhr) {
+              xhr.setRequestHeader("Authorization", "Bearer " + token);
             },
             success: function (response) {
               console.log(response);
@@ -409,6 +448,69 @@
           });
         }
       });
+
+      function checkout() {
+        const name = document.getElementById("name").value;
+        requestData.name = name;
+
+        const address = document.getElementById("address").value;
+        requestData.address = address;
+
+        const phone = document.getElementById("phone").value;
+        requestData.phone = phone;
+
+        requestData.totalPrice = cartTotal;
+
+        $.ajax({
+          url: "http://localhost:3000/orders/create-order",
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(requestData),
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+          },
+          success: function (response) {
+            // Xử lý phản hồi từ API
+            console.log("Đơn hàng đã được tạo:", response);
+            alert(
+              "Thanh toán thành công, đơn hàng của bạn sẽ được gửi đi sớm!"
+            );
+            window.location.href = "http://127.0.0.1:5500/public/shop.html";
+          },
+          error: function (xhr, status, error) {
+            // Xử lý lỗi nếu có
+            console.error("Lỗi khi tạo đơn hàng:", error);
+          },
+        });
+      }
+      function updateCart() {
+        updateData.books.forEach(async (object) => {
+          const id = "quantity"+ object.bookId;
+          const updatedQuantity = document.getElementById(id).value;
+
+          if (parseInt(updatedQuantity)!==parseInt(object.quantity)) {
+            object.quantity = updatedQuantity;
+          }
+        });
+        console.log(JSON.stringify(updateData));
+        $.ajax({
+          url: "http://localhost:3000/cart/update-cart",
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(updateData),
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+          },
+          success: function (response) {
+            console.log("Sửa thành công giỏ hàng:", response);
+            alert("Sửa thành công giỏ hàng!");
+          },
+          error: function (xhr, status, error) {
+            // Xử lý lỗi nếu có
+            console.error("Lỗi khi sửa giỏ hàng:", error);
+          },
+        });
+      }
     </script>
   </body>
 </html>
