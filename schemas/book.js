@@ -16,6 +16,7 @@ var bookSchema = mongoose.Schema({
         type: Number,
         default:0
     },
+    description: String,
     isDeleted:{
         type:Boolean,
         default:false

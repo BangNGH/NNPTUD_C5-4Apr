@@ -66,7 +66,7 @@
               <!-- menu start -->
               <nav class="main-menu">
                 <ul>
-                  <li class="current-list-item">
+                  <!-- <li class="current-list-item">
                     <a href="#">Home</a>
                     <ul class="sub-menu">
                       <li><a href="index.html">Static Home</a></li>
@@ -93,11 +93,11 @@
                       <li><a href="single-news.html">Single News</a></li>
                     </ul>
                   </li>
-                  <li><a href="contact.html">Contact</a></li>
+                  <li><a href="contact.html">Contact</a></li> -->
                   <li>
                     <a href="shop.html">Shop</a>
                     <ul class="sub-menu">
-                      <li><a href="shop.html">Shop</a></li>
+                      <li><a href="shop.html">Xem đơn hàng</a></li>
                       <li><a href="checkout.html">Check Out</a></li>
                       <li><a href="single-product.html">Single Product</a></li>
                       <li><a href="cart.html">Cart</a></li>
@@ -132,14 +132,18 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
-            <span class="close-btn"><i class="fas fa-window-close"></i></span>
+            <span id="closeSearch" class="close-btn"><i class="fas fa-window-close"></i></span>
             <div class="search-bar">
               <div class="search-bar-tablecell">
                 <h3>Search For:</h3>
-                <input type="text" placeholder="Keywords" />
-                <button type="submit">
-                  Search <i class="fas fa-search"></i>
-                </button>
+                <form id="search">
+                  <input type="text" name="input" id="input" value="" placeholder="Keywords" />
+                  <button type="submit">
+                    Search <i class="fas fa-search"></i>
+                  </button>
+                </form>
+               
+
               </div>
             </div>
           </div>
@@ -206,14 +210,69 @@
     <script src="assets/js/main.js"></script>
     <script type="text/javascript">
       $(document).ready(function () {
+        
+        function getCookie(name) {
+            var value = "; " + document.cookie;
+            var parts = value.split("; " + name + "=");
+            if (parts.length == 2) return parts.pop().split(";").shift();
+        }
+        var token = getCookie("jwtToken");
         $.ajax({
           type: "GET",
           url: "http://localhost:3000/books",
           success: function (data) {
+            ajaxShowBook(data);
+          },
+          error: function (data) {
             console.log(data);
-            // Lặp qua mảng dữ liệu sách và tạo các phần tử HTML tương ứng
-            data.forEach(function (book) {
-              // Tạo phần tử div chứa thông tin của mỗi cuốn sách
+          },
+        });
+        $("#search").submit(function(e){
+        e.preventDefault();
+        var keyword = $('#input').val();
+           $.ajax({
+            url: 'http://localhost:3000/books?name=' + keyword,
+            type: 'GET',
+            success: function(res){
+              if(res.length==0){
+                document.getElementById('list').innerHTML = '<h3 style="margin: 0 auto;">Không tìm thấy kết quả!</h3>';
+              }else{
+                ajaxShowBook(res);
+              }
+              document.getElementById('closeSearch').click();
+            },
+            error: function (jqXHR, exception){
+              console.log(jqXHR);
+              console.log(exception);
+            }
+           });
+        return false;
+      });
+      });
+      function addToCart(bookId) {
+        $.ajax({
+            url: "http://localhost:3000/cart/add-to-cart",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({
+              "bookId": bookId
+            }),
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+            },
+            success: function (data) {
+              alert("Đã thêm vào giỏ hàng!");
+        
+            },
+            error: function (jqXHR, exception) {
+              console.log(jqXHR);
+              console.log(exception);
+            },
+        });
+      }
+     function ajaxShowBook(data){
+      document.getElementById('list').innerHTML='';
+      data.forEach(function (book) {
               var productDiv = document.createElement("div");
               productDiv.classList.add(
                 "col-lg-4",
@@ -222,11 +281,9 @@
                 "strawberry"
               );
 
-              // Tạo phần tử div cho mỗi cuốn sách
               var singleProductItem = document.createElement("div");
               singleProductItem.classList.add("single-product-item");
 
-              // Tạo phần tử div cho hình ảnh sản phẩm
               var productImage = document.createElement("div");
               productImage.classList.add("product-image");
               var imageLink = document.createElement("a");
@@ -274,40 +331,7 @@
               var productList = document.getElementById("list");
               productList.appendChild(productDiv);
             });
-          },
-          error: function (data) {
-            console.log(data);
-          },
-        });
-      });
-      function getCookie(name) {
-    var value = "; " + document.cookie;
-    var parts = value.split("; " + name + "=");
-    if (parts.length == 2) return parts.pop().split(";").shift();
-}
-var token = getCookie("jwtToken");
-      function addToCart(bookId) {
-        $.ajax({
-            url: "http://localhost:3000/cart/add-to-cart",
-            type: "POST",
-        
-    contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({
-              "bookId": bookId
-            }),
-            beforeSend: function(xhr) {
-                xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-            },
-            success: function (data) {
-              alert("Đã thêm vào giỏ hàng!");
-        
-            },
-            error: function (jqXHR, exception) {
-              console.log(jqXHR);
-              console.log(exception);
-            },
-        });
-      }
+     }
     </script>
     
   </body>

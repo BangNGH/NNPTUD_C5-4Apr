@@ -43,11 +43,11 @@ router.post('/create-order', protect, async (req, res) => {
   }
 });
 
-router.get('/orders/:userId', async (req, res) => {
+router.get('/getAll/:userId', async (req, res) => {
   const userId = req.params.userId;
 
   try {
-      const orders = await Order.find({ userId: userId }).populate('books.bookId');
+      const orders = await Order.find({ userId: userId }).populate('books');
       res.status(200).json(orders);
   } catch (error) {
       console.error(error);

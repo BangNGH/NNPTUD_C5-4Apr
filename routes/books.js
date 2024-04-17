@@ -30,7 +30,6 @@ router.get('/', async function (req, res, next) {
       }
     }
   }
-  console.log(queries);
   queries.isDeleted = false;
   books = await bookModel.find(queries)
     .populate({ path: 'author', select: "_id name" }).lean()
@@ -48,7 +47,8 @@ router.post('/', async function (req, res, next) {
       name: req.body.name,
       year: req.body.year,
       author: req.body.author,
-      price: req.body.price
+      price: req.body.price,
+      description: req.body.description
     });
     await newBook.save();
     res.status(200).send(newBook);
