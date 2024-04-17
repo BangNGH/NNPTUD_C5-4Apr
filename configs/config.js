@@ -3,6 +3,6 @@ module.exports = {
     JWT_EXP_IN: '1d',
     Host: "sandbox.smtp.mailtrap.io",
     Port: 25,
-    Username: "86634327db12ea",
-    Password: "b63559391aee70",
+    Username: "afeb42fca219a0",
+    Password: "d599591060460a",
 }

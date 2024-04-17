@@ -7,6 +7,8 @@ var checkAuth = require("../validators/auth");
 var bcrypt = require("bcrypt");
 var protect = require("../middlewares/protect");
 var sendMail = require("../helper/sendmail");
+const path = require('path');
+const { register } = require('module');
 
 router.post("/changepassword", protect, async function (req, res, next) {
   if (bcrypt.compareSync(req.body.oldpassword, req.user.password)) {
@@ -88,6 +90,33 @@ router.post("/register", checkAuth(), async function (req, res, next) {
   }
 });
 
+
+router.get("/ForgotPassword", function (req, res) {
+  res.sendFile(path.join(__dirname, '../public/forgotPassword.html'));
+});
+
+router.post("/ForgotPassword", async function (req, res, next) {
+  let user = await userModel.findOne({ email: req.body.email });
+  if (!user) {
+    res.status(404).send({ message: "Emai khong ton tai" });
+    return;
+  }
+  let token = user.genTokenResetPassword();
+  await user.save();
+  let url = `http://localhost:3000/auth/ResetPassword?token=${token}`;
+  try {
+    await sendMail(user.email, url);
+    res.status(200).send({ message: "gui mail thanh cong" });
+  } catch (error) {
+    res.status(404).send(error);
+  }
+});
+
+// Route GET để trả về trang HTML reset password với token
+router.get("/resetPassword", function (req, res) {
+  res.sendFile(path.join(__dirname, '../public/resetPassword.html'));
+});
+
 router.post("/ResetPassword/:token", async function (req, res, next) {
   let user = await userModel.findOne({
     ResetPasswordToken: req.params.token,
@@ -100,24 +129,7 @@ router.post("/ResetPassword/:token", async function (req, res, next) {
   user.ResetPasswordToken = undefined;
   user.ResetPasswordExp = undefined;
   await user.save();
-  res.status(200).send("doi pass thanh cong");
-});
-
-router.post("/ForgotPassword", async function (req, res, next) {
-  let user = await userModel.findOne({ email: req.body.email });
-  if (!user) {
-    res.status(404).send("EMail khong ton tai");
-    return;
-  }
-  let token = user.genTokenResetPassword();
-  await user.save();
-  let url = `http://localhost:3000/auth/ResetPassword/${token}`;
-  try {
-    await sendMail(user.email, url);
-    res.status(200).send("gui mail thanh cong");
-  } catch (error) {
-    res.status(404).send(error);
-  }
+  res.status(200).send({ message: "Doi pass thanh cong" });
 });
 
 module.exports = router;
