@@ -37,8 +37,11 @@ router.get('/', async function (req, res, next) {
   res.status(200).send(books);
 });
 router.get('/:id', async function (req, res, next) {
-  var book = await bookModel.findById(req.params.id).exec();
+  var book = await bookModel.findById(req.params.id).populate({ path: 'author', select: "_id name" }).exec();
+  console.log(book);
+
   res.status(200).send(book);
+
 });
 
 router.post('/', async function (req, res, next) {

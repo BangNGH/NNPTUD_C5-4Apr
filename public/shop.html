@@ -287,9 +287,9 @@
               var productImage = document.createElement("div");
               productImage.classList.add("product-image");
               var imageLink = document.createElement("a");
-              imageLink.href = "single-product.html";
+              imageLink.href = "single-product.html?id="+book._id;
               var image = document.createElement("img");
-              image.src = "assets/img/products/product-img-1.jpg"; // Thay đổi src hình ảnh tương ứng
+              image.src = "assets/img/products/product-img-1.jpg"; 
               image.alt = "Product Image";
               imageLink.appendChild(image);
               productImage.appendChild(imageLink);
