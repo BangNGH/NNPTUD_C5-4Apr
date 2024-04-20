@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var userModel = require("../schemas/user");
 var ResHand = require("../helper/ResHandle");
+var sendContact = require("../helper/sendContact");
 var { validationResult } = require("express-validator");
 var checkAuth = require("../validators/auth");
 var bcrypt = require("bcrypt");

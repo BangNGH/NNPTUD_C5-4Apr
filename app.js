@@ -14,11 +14,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(session({
-  secret: 'your_secret_key',
-  resave: false,
-  saveUninitialized: true
-}));
 app.use(express.json());
 app.use(cookieParser());
 app.use(session({

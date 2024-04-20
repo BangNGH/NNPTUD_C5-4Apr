@@ -35,7 +35,7 @@ router.post("/add-to-cart", protect, async (req, res) => {
 });
 router.post("/update-cart", protect, async (req, res) => {
   const userId = req.user._id;
-  const updateBooksData = req.body.books; // books{bookId, quantity}
+  const updateBooksData = req.body.books; 
   console.log(updateBooksData);
   try {
     let cart = await CartItem.findOne({ userId: userId });
